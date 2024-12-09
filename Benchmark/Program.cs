@@ -27,7 +27,7 @@ public class Runner
     [Benchmark(Baseline = true)]
     public DateTimeOffset Normal()
     {
-        return DateTimeOffsetHelpers.NaiveConversion(_japan);
+        return DateTimeOffsetHelpers.NaiveConversionToTokyoTime(_japan);
     }
 
     [Benchmark]

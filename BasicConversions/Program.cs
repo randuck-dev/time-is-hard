@@ -4,7 +4,7 @@ var dateOnly = new DateOnly(2024, 12, 31);
 var timeOnly = new TimeOnly(00, 00, 00);
 var rawTokyoTime = new DateTime(dateOnly, timeOnly, DateTimeKind.Unspecified);
 var betterTokyoTime = new DateTimeOffset(dateOnly, timeOnly, TimeSpan.FromHours(9));
-var naive = DateTimeOffsetHelpers.NaiveConversion(rawTokyoTime);
+var naive = DateTimeOffsetHelpers.NaiveConversionToTokyoTime(rawTokyoTime);
 var inLineTimezone = DateTimeOffsetHelpers.InlineTimezoneLookupTokyo(rawTokyoTime);
 var tokyoToUtcFromDateTimeOffset = DateTimeOffsetHelpers.ToUtc(betterTokyoTime);
 

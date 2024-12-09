@@ -23,34 +23,66 @@ Agenda
 
 <!-- end_slide -->
 
-Let's talk everyday average code
+Common Pitfalls (1) Basic Conversion
 ---
 
-# Something about basic mistakes we can make
+# Snippet Time
+
+<!-- pause -->
 
 ```csharp
-public DateTimeOffset FromAustraliaToUtc(DateTime dateTime) {
-    return new DateTimeOffset(datetime, TimeSpan.FromHours(0));
+public static DateTimeOffset NaiveConversionToTokyoTime(DateTime dateTime)
+{
+    return new DateTimeOffset(dateTime.AddHours(-9), TimeSpan.Zero);
 }
 ```
 
 <!-- pause -->
 
-# Which problems do you see in this snippet?
+# Any issues?
 
 <!-- pause -->
 
 <!-- incremental_lists: true -->
-- Assuming that the datetime is in Australia Time
-- Hopefully DateTime.Kind is Unspecified
 
-
+- Assuming that the DateTime is in Tokyo Time
+- Hopefully DateTime.Kind is of type `Unspecified`
+- What about timezone nuances?
 
 <!-- incremental_lists: false -->
 
+<!-- end_slide -->
+Common Pitfalls (2) Timezone Lookup
+---
+
+# Snippet Time
+
+```csharp
+public static DateTimeOffset InlineTimezoneLookupTokyo(DateTime dateTime)
+{
+    var timeZone = TimeZoneInfo.FindSystemTimeZoneById("Tokyo Standard Time");
+    return TimeZoneInfo.ConvertTimeToUtc(dateTime, timeZone);
+}
+```
+
+<!-- pause -->
+# What about issues?
+<!-- pause -->
+
+<!-- incremental_lists: true -->
+
+- Assuming that the DateTime is in Tokyo Time
+- Hopefully DateTime.Kind is of type `Unspecified`
+- What about timezone nuances?
+
+<!-- incremental_lists: false -->
 
 <!-- end_slide -->
+Common Pitfalls (3) DST Time Issues
+---
 
+
+<!-- end_slide -->
 Can we design our way out of these pitfalls?
 ---
 
