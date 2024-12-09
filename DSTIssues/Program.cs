@@ -1,19 +1,20 @@
-﻿using NodaTime;
-using NodaTime.TimeZones;
+﻿using NodaTime.TimeZones;
+using Shared;
 
 var basicDate = new DateTimeOffset(2024, 10, 27, 2, 0, 0, TimeSpan.FromHours(2)); 
-
 var basicDatePlusTwo = basicDate.AddHours(2);
 
-var instant = Instant.FromDateTimeOffset(basicDate); 
-var cphTimeZone = TzdbDateTimeZoneSource.Default.ForId("Europe/Copenhagen");
-var zonedDateTime = new ZonedDateTime(instant, cphTimeZone);
+var versionOfTimeZone = TzdbDateTimeZoneSource.Default.VersionId;
+var zonedDateTime = NodaTimeHelpers.ToZonedCopenhagen(basicDate);
 var zonedWithAddedHours = zonedDateTime.PlusHours(2);
 
+Console.WriteLine("<Built-In>");
+Console.WriteLine($"DateTimeOffset: {basicDate}");
+Console.WriteLine($"DateTimeOffset+2h: {basicDatePlusTwo}");
+Console.WriteLine("</Built-In>\n\n\n\n\n");
 
-Console.WriteLine(basicDate);
-Console.WriteLine(basicDatePlusTwo);
-Console.WriteLine(instant);
-Console.WriteLine(zonedDateTime);
-Console.WriteLine(zonedWithAddedHours);
-Console.WriteLine(zonedWithAddedHours.PlusHours(-2));
+Console.WriteLine("<NodaTime>");
+Console.WriteLine($"Version of Tzdb: {versionOfTimeZone}");
+Console.WriteLine($"Zoned: {zonedDateTime}");
+Console.WriteLine($"Zoned +2 Hours: {zonedWithAddedHours}");
+Console.WriteLine("</ NodaTime>");

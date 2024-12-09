@@ -1,29 +1,19 @@
-﻿var dateOnly = new DateOnly(2024, 12, 31);
+﻿using Shared;
+
+var dateOnly = new DateOnly(2024, 12, 31);
 var timeOnly = new TimeOnly(00, 00, 00);
-var dateTimeJapan = new DateTime(dateOnly, timeOnly, DateTimeKind.Unspecified);
-var utc1 = ToUtc1(dateTimeJapan);
-var utc2 = ToUtc2(dateTimeJapan);
+var rawTokyoTime = new DateTime(dateOnly, timeOnly, DateTimeKind.Unspecified);
+var betterTokyoTime = new DateTimeOffset(dateOnly, timeOnly, TimeSpan.FromHours(9));
+var naive = DateTimeOffsetHelpers.NaiveConversion(rawTokyoTime);
+var inLineTimezone = DateTimeOffsetHelpers.InlineTimezoneLookupTokyo(rawTokyoTime);
+var tokyoToUtcFromDateTimeOffset = DateTimeOffsetHelpers.ToUtc(betterTokyoTime);
 
 var tokyoTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Tokyo Standard Time");
-var utc3 = ToUtc3(dateTimeJapan, tokyoTimeZone);
+var passedTimezone = DateTimeOffsetHelpers.PassInTimezone(rawTokyoTime, tokyoTimeZone);
 
-Console.WriteLine(dateTimeJapan);
-Console.WriteLine(utc1); 
-Console.WriteLine(utc2);
-Console.WriteLine(utc3);
+Console.WriteLine($"Raw: {rawTokyoTime}");
+Console.WriteLine($"Naive: {naive}"); 
+Console.WriteLine($"Inline: {inLineTimezone}");
+Console.WriteLine($"Passed: {passedTimezone}");
+Console.WriteLine($"Better: {tokyoToUtcFromDateTimeOffset}"); 
 
-DateTimeOffset ToUtc1(DateTime dateTime)
-{
-    return new DateTimeOffset(dateTime, TimeSpan.Zero);
-}
-
-DateTimeOffset ToUtc2(DateTime dateTimeInJapanTimeZone)
-{
-    var timeZone = TimeZoneInfo.FindSystemTimeZoneById("Tokyo Standard Time");
-    return TimeZoneInfo.ConvertTimeToUtc(dateTimeInJapanTimeZone, timeZone);
-}
-
-DateTimeOffset ToUtc3(DateTime dateTimeInJapanTimeZone, TimeZoneInfo timeZone)
-{
-    return TimeZoneInfo.ConvertTimeToUtc(dateTimeInJapanTimeZone, timeZone);
-}

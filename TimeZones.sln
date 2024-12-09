@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSTIssues", "DSTIssues\DSTI
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Benchmark", "Benchmark\Benchmark.csproj", "{B150853D-EE3C-4F21-BBCE-48BC560FCB5D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Shared\Shared.csproj", "{98247FD0-22D2-4E20-AE0D-8DBF4C2388BA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{B150853D-EE3C-4F21-BBCE-48BC560FCB5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B150853D-EE3C-4F21-BBCE-48BC560FCB5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B150853D-EE3C-4F21-BBCE-48BC560FCB5D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{98247FD0-22D2-4E20-AE0D-8DBF4C2388BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{98247FD0-22D2-4E20-AE0D-8DBF4C2388BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{98247FD0-22D2-4E20-AE0D-8DBF4C2388BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{98247FD0-22D2-4E20-AE0D-8DBF4C2388BA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
