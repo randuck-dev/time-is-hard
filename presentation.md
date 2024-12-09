@@ -83,6 +83,39 @@ Common Pitfalls (3) DST Time Issues
 
 
 <!-- end_slide -->
+How to store the data?
+---
+
+```csharp
+record Option1(DateTime UtcData);
+```
+
+- Original information is lost
+
+```csharp
+record Option2(DateTime UtcData, string IanaId, string TzdbVersion);
+```
+
+- Improved with TimeZoneInfo and which version of the Tzdb
+- Still in UTC, but we can recalculate
+
+```csharp
+record Option3(DateTime Original, DateTimeOffset Derived, string IanaId, string TzdbVersion);
+```
+
+- Adheres to principle of "preserved data"
+- Derived can be recalculated, without the original having to change
+
+<!-- end_slide -->
 Can we design our way out of these pitfalls?
 ---
+
+<!-- end_slide -->
+Resources for this presentation
+---
+
+# [`Storing UTC is not a silver bullet`](https://codeblog.jonskeet.uk/2019/03/27/storing-utc-is-not-a-silver-bullet/)
+
+# [`When “UTC everywhere” isn’t enough - storing time zones in PostgreSQL and SQL Server`](https://www.roji.org/storing-timezones-in-the-db)
+
 
