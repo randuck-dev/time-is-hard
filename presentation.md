@@ -16,6 +16,8 @@ Agenda
 ---
 
 
+# Some Timezones Details
+
 # Common Scenarios
 ## DateTimeOffset
 ##  NodaTime
@@ -23,6 +25,50 @@ Agenda
 
 # Past vs Future
 
+<!-- end_slide -->
+
+Some Timezones Details
+---
+
+<!-- incremental_lists: true -->
+
+- Decided by government for the country 
+- Some timezones are 30 or 45 minutes
+  - E.g. India, Nepal
+- Offset ranges from UTC-12:00 -> UTC+14:00
+- Some of them have a scary feature
+  - DST
+
+<!-- incremental_lists: false -->
+
+<!-- end_slide -->
+
+RFC3339 (ISO8601)
+---
+
+<!-- incremental_lists: true -->
+- 2024-01-01 12:00:00Z
+- 2024-01-01 12:00:00+00:00
+- 2024-01-01 12:00:00-00:00
+- 2024-01-01 12:00:00+02:00
+- 2024-01-01 12:00:00+04:00
+<!-- incremental_lists: false -->
+
+# What do they all lack?
+
+- Timezone Information!
+
+
+<!-- end_slide -->
+
+RFC9557 (ISO8601)
+---
+<!-- incremental_lists: true -->
+- Approved as of April 2024
+- Internet Extended Date/Time Format
+- 2022-07-08T02:14:07+02:00\[Europe/Paris\]
+- 1996-12-19T16:39:57-08:00\[America/Los_Angeles\]\[u-ca=hebrew\]
+<!-- incremental_lists: false -->
 
 <!-- end_slide -->
 
@@ -287,5 +333,8 @@ Resources for this presentation
 # [`Storing UTC is not a silver bullet`](https://codeblog.jonskeet.uk/2019/03/27/storing-utc-is-not-a-silver-bullet/)
 
 # [`When “UTC everywhere” isn’t enough - storing time zones in PostgreSQL and SQL Server`](https://www.roji.org/storing-timezones-in-the-db)
+# [`RFC3339`](https://datatracker.ietf.org/doc/html/rfc3339)
+
+# [`RFC9557`](https://datatracker.ietf.org/doc/html/rfc9557)
 
 
