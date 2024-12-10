@@ -27,7 +27,7 @@ public class Runner
     [Benchmark(Baseline = true)]
     public DateTimeOffset Normal()
     {
-        return DateTimeOffsetHelpers.NaiveConversionToTokyoTime(_japan);
+        return DateTimeOffsetHelpers.FromTokyoTime(_japan);
     }
 
     [Benchmark]
@@ -41,7 +41,7 @@ public class Runner
     {
         return DateTimeOffsetHelpers.PassInTimezone(_japan, _timeZone);
     }
-    
+
     [Benchmark]
     public DateTimeOffset ClassicalToUtc()
     {

@@ -5,7 +5,7 @@ namespace Shared;
 public static class DateTimeOffsetHelpers
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static DateTimeOffset NaiveConversionToTokyoTime(DateTime dateTime)
+    public static DateTimeOffset FromTokyoTime(DateTime dateTime)
     {
         return new DateTimeOffset(dateTime.AddHours(-9), TimeSpan.Zero);
     }
@@ -16,7 +16,7 @@ public static class DateTimeOffsetHelpers
         var timeZone = TimeZoneInfo.FindSystemTimeZoneById("Tokyo Standard Time");
         return TimeZoneInfo.ConvertTimeToUtc(dateTime, timeZone);
     }
-    
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static DateTimeOffset ToUtc(DateTimeOffset dateTimeInJapanTimeZone)
     {

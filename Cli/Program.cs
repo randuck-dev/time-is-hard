@@ -1,8 +1,8 @@
 ﻿using NodaTime.TimeZones;
 using Shared;
-
 var jobMap = new Dictionary<string, Action>() {
   {"datetimeoffset", ExampleBuiltIn},
+  {"datetimeoffsetsolid", ExampleBuiltInSolid},
   {"nodatime", ExampleNodaTime},
   {"timezones", ExampleTimezones},
 };
@@ -28,8 +28,21 @@ void ExampleBuiltIn()
     var basicDate = new DateTimeOffset(2024, 10, 27, 2, 0, 0, TimeSpan.FromHours(2));
     var basicDatePlusTwo = basicDate.AddHours(2);
 
-    Console.WriteLine($"Time: {basicDate}");
+    Console.WriteLine($"Time   : {basicDate}");
     Console.WriteLine($"Time+2h: {basicDatePlusTwo}");
+}
+
+void ExampleBuiltInSolid()
+{
+    var basicDate = new DateTimeOffset(2024, 10, 27, 2, 0, 0, TimeSpan.FromHours(2));
+    var copenhagenTz = TimeZoneInfo.FindSystemTimeZoneById("Central European Standard Time");
+    var isDaylight = copenhagenTz.IsDaylightSavingTime(basicDate);
+    var addTwoHours = isDaylight ? basicDate.AddHours(2) : basicDate.AddHours(1);
+    var inZone = TimeZoneInfo.ConvertTime(addTwoHours, copenhagenTz);
+
+    Console.WriteLine($"Time          : {basicDate}");
+    Console.WriteLine($"Time+2h       : {addTwoHours}");
+    Console.WriteLine($"Time+2h+offset: {inZone}");
 }
 
 void ExampleNodaTime()
@@ -40,7 +53,8 @@ void ExampleNodaTime()
     var zonedWithAddedHours = zonedDateTime.PlusHours(2);
 
     Console.WriteLine($"Version of Tzdb: {versionOfTimeZone}");
-    Console.WriteLine($"Time: {zonedDateTime}");
+    Console.WriteLine("-----------");
+    Console.WriteLine($"Time  : {zonedDateTime}");
     Console.WriteLine($"Time+2: {zonedWithAddedHours}");
 }
 
@@ -50,15 +64,15 @@ void ExampleTimezones()
     var timeOnly = new TimeOnly(00, 00, 00);
     var rawTokyoTime = new DateTime(dateOnly, timeOnly, DateTimeKind.Unspecified);
     var betterTokyoTime = new DateTimeOffset(dateOnly, timeOnly, TimeSpan.FromHours(9));
-    var naive = DateTimeOffsetHelpers.NaiveConversionToTokyoTime(rawTokyoTime);
+    var naive = DateTimeOffsetHelpers.FromTokyoTime(rawTokyoTime);
     var inLineTimezone = DateTimeOffsetHelpers.InlineTimezoneLookupTokyo(rawTokyoTime);
     var tokyoToUtcFromDateTimeOffset = DateTimeOffsetHelpers.ToUtc(betterTokyoTime);
 
     var tokyoTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Tokyo Standard Time");
     var passedTimezone = DateTimeOffsetHelpers.PassInTimezone(rawTokyoTime, tokyoTimeZone);
 
-    Console.WriteLine($"Raw: {rawTokyoTime}");
-    Console.WriteLine($"Naive: {naive}");
+    Console.WriteLine($"Raw   : {rawTokyoTime}");
+    Console.WriteLine($"Naive : {naive}");
     Console.WriteLine($"Inline: {inLineTimezone}");
     Console.WriteLine($"Passed: {passedTimezone}");
     Console.WriteLine($"Better: {tokyoToUtcFromDateTimeOffset}");
