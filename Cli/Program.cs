@@ -34,13 +34,13 @@ void ExampleBuiltIn()
 
 void ExampleBuiltInSolid()
 {
-    var basicDate = new DateTimeOffset(2024, 10, 27, 2, 0, 0, TimeSpan.FromHours(2));
+    var copenhagenDate = new DateTimeOffset(2024, 10, 27, 2, 0, 0, TimeSpan.FromHours(2));
     var copenhagenTz = TimeZoneInfo.FindSystemTimeZoneById("Central European Standard Time");
-    var isDaylight = copenhagenTz.IsDaylightSavingTime(basicDate);
-    var addTwoHours = isDaylight ? basicDate.AddHours(2) : basicDate.AddHours(1);
+    var isDaylight = copenhagenTz.IsDaylightSavingTime(copenhagenDate);
+    var addTwoHours = isDaylight ? copenhagenDate.AddHours(2) : copenhagenDate.AddHours(1);
     var inZone = TimeZoneInfo.ConvertTime(addTwoHours, copenhagenTz);
 
-    Console.WriteLine($"Time          : {basicDate}");
+    Console.WriteLine($"Time          : {copenhagenDate}");
     Console.WriteLine($"Time+2h       : {addTwoHours}");
     Console.WriteLine($"Time+2h+offset: {inZone}");
 }

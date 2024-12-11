@@ -1,15 +1,15 @@
 ---
-title: Time Is Hard 
+title: What time is it? 
 sub_title: Navigating details of DST and other quirks of time
 authors:
-  - Raphael Neumann (rne@mft-energy.com / mail@raphaelneumann.dk)
+  - Raphael Neumann (mail@raphaelneumann.dk)
 theme:
   name: catppuccin-frappe
   override:
     footer:
       style: template
       left: "Raphael Neumann"
-      center: "Time is Hard"
+      center: "What time is it?"
       right: "{current_slide} / {total_slides}"
 ---
 Agenda
@@ -46,17 +46,27 @@ Some Timezones Details
 RFC3339 (ISO8601)
 ---
 
+# Examples
+
+<!-- pause -->
+
 <!-- incremental_lists: true -->
-- 2024-01-01 12:00:00Z
-- 2024-01-01 12:00:00+00:00
-- 2024-01-01 12:00:00-00:00
-- 2024-01-01 12:00:00+02:00
-- 2024-01-01 12:00:00+04:00
+- 2024-01-01T12:00:00Z
+- 2024-01-01T12:00:00+00:00
+- 2024-01-01T12:00:00-00:00
+- 2024-01-01T12:00:00+02:00
+- 2024-01-01T12:00:00+04:00
 <!-- incremental_lists: false -->
+
+<!-- pause -->
 
 # What do they all lack?
 
+<!-- pause -->
+
+<!-- incremental_lists: true -->
 - Timezone Information!
+<!-- incremental_lists: false -->
 
 
 <!-- end_slide -->
@@ -65,17 +75,29 @@ RFC9557 (ISO8601)
 ---
 <!-- incremental_lists: true -->
 - Approved as of April 2024
-- Internet Extended Date/Time Format
+- Internet Extended Date/Time Format (IXDTF)
 - 2022-07-08T02:14:07+02:00\[Europe/Paris\]
 - 1996-12-19T16:39:57-08:00\[America/Los_Angeles\]\[u-ca=hebrew\]
 <!-- incremental_lists: false -->
 
 <!-- end_slide -->
 
-Scenario (1) Basic Conversion
+What information does your computer have?
 ---
 
-# Snippet Time
+```bash +exec
+cat /usr/share/zoneinfo/Europe/Copenhagen | tail -n 1
+```
+<!-- pause -->
+
+-> Translates to
+- First part: CET to CEST at the last sunday in March at 3 in the morning
+- Second part: Go back to CET from CEST in the last sunday of october at 3 am local 
+
+
+<!-- end_slide -->
+Scenario (1) Basic Conversion
+---
 
 <!-- pause -->
 
@@ -121,7 +143,7 @@ public static DateTimeOffset InlineTimezoneLookupTokyo(DateTime dateTime)
 <!-- incremental_lists: true -->
 
 - Which version of the `Tokyo Standard Time`?
-  - 2024a? 2024b? etc..
+  - 2018a? 2024a? 2024b? etc..
 
 <!-- incremental_lists: false -->
 
@@ -129,9 +151,10 @@ public static DateTimeOffset InlineTimezoneLookupTokyo(DateTime dateTime)
 Scenario (3) DST Arithmetics P1 - BuiltIn
 ---
 
+
 ```csharp
-var basicDate = new DateTimeOffset(2024, 10, 27, 2, 0, 0, TimeSpan.FromHours(2));
-var basicDatePlusTwo = basicDate.AddHours(2);
+var copenhagenDate = new DateTimeOffset(2024, 10, 27, 2, 0, 0, TimeSpan.FromHours(2));
+var copenhagenDatePlusTwo = copenhagenDate.AddHours(2);
 ```
 <!-- pause  -->
 # Issues?
@@ -146,10 +169,8 @@ Scenario (4) DST Arithmetics P1 - BuiltIn
 ---
 
 ```csharp
-var basicDate = new DateTimeOffset(2024, 10, 27, 2, 0, 0, TimeSpan.FromHours(2));
-var copenhagenTz = TimeZoneInfo.FindSystemTimeZoneById("Central European Standard Time");
-var isDaylight = copenhagenTz.IsDaylightSavingTime(basicDate);
-var addTwoHours = isDaylight ? basicDate.AddHours(2) : basicDate.AddHours(1);
+var isDaylight = copenhagenTz.IsDaylightSavingTime(copenhagenDate);
+var addTwoHours = isDaylight ? copenhagenDate.AddHours(2) : copenhagenDate.AddHours(1);
 var inZone = TimeZoneInfo.ConvertTime(addTwoHours, copenhagenTz);
 ```
 
@@ -164,8 +185,8 @@ Scenario (5) DST Arithmetics P2 - NodaTime
 ---
 
 ```csharp
-var versionOfTimeZone = TzdbDateTimeZoneSource.Default.VersionId;
-var zonedDateTime = NodaTimeHelpers.ToZonedCopenhagen(basicDate);
+var instant = Instant.FromDateTimeOffset(copenhagenDate); 
+var zonedDateTime = new ZonedDateTime(instant, timeZone);
 var zonedWithAddedHours = zonedDateTime.PlusHours(2);
 ```
 
@@ -191,7 +212,7 @@ How do we store the data? Option 1
 <!-- pause -->
 
 ```csharp
-record Reservation(string Name, DateTime UtcDate);
+record Reservation(string Name, DateTime UtcDate, string Address);
 ```
 
 <!-- pause -->
@@ -200,7 +221,7 @@ record Reservation(string Name, DateTime UtcDate);
 ```json
 {
   "name": "NiceReservation",
-  "utcDate": "2026-01-10 11:00:00Z",
+  "utcDate": "2026-01-10T11:00:00Z",
   "address": "Aarhus"
 }
 ```
@@ -222,7 +243,7 @@ How do we store the data? Option 2
 <!-- pause -->
 
 ```csharp
-record Reservation(DateTime UtcData, string IanaId, string TzdbVersion);
+record Reservation(DateTime UtcDate, string Address, string IanaId, string TzdbVersion);
 ```
 <!-- pause -->
 <!-- incremental_lists: true -->
@@ -237,7 +258,7 @@ record Reservation(DateTime UtcData, string IanaId, string TzdbVersion);
 ```json
 {
   "name": "NiceReservation",
-  "utcDate": "2026-01-10 11:00:00Z",
+  "utcDate": "2026-01-10T11:00:00Z",
   "ianaId": "Europe/Copenhagen",
   "tzdbVersion": "2024b",
   "address": "Aarhus"
@@ -254,7 +275,7 @@ record Reservation(DateTime UtcData, string IanaId, string TzdbVersion);
 ```json
 {
   "name": "NiceReservation",
-  "utcDate": "2026-01-10 10:30:00Z",
+  "utcDate": "2026-01-10T10:30:00Z",
   "ianaId": "Europe/Aarhus",
   "tzdbVersion": "2025a",
   "address": "Aarhus"
@@ -275,7 +296,7 @@ How do we store the data? Option 3
 
 <!-- pause -->
 ```csharp
-record Reservation(DateTime Original, DateTimeOffset Derived, string IanaId, string TzdbVersion);
+record Reservation(DateTime OriginalDate, DateTimeOffset UtcDate, string Address, string IanaId, string TzdbVersion);
 ```
 <!-- incremental_lists: true -->
 - Adheres to principle of "preserved data"
@@ -288,7 +309,7 @@ record Reservation(DateTime Original, DateTimeOffset Derived, string IanaId, str
 {
   "name": "NiceReservation",
   "originalDate": "2026-01-10 12:00:00",
-  "utcDate": "2026-01-10 11:00:00Z",
+  "utcDate": "2026-01-10T11:00:00Z",
   "ianaId": "Europe/Copenhagen",
   "tzdbVersion": "2024b",
   "address": "Aarhus"
@@ -306,7 +327,7 @@ record Reservation(DateTime Original, DateTimeOffset Derived, string IanaId, str
 {
   "name": "NiceReservation",
   "originalDate": "2026-01-10 12:00:00",
-  "utcDate": "2026-01-10 10:30:00Z",
+  "utcDate": "2026-01-10T10:30:00Z",
   "ianaId": "Europe/Aarhus",
   "tzdbVersion": "2025a",
   "address": "Aarhus"
@@ -320,21 +341,45 @@ Past vs Future
 # Distant Past
 - Saving UTC is safe 99% of the time
 
+<!-- pause -->
+
 # Near Past
 - You might be processing a datapoint from yesterday, but are not using the latest Tzdb that was released yesterday
 
+<!-- pause -->
 # Future
 - Save the original data and consider using `Option3` 
 
+```csharp
+record Reservation(DateTime OriginalDate, DateTimeOffset UtcDate, string Address, string IanaId, string TzdbVersion);
+```
 <!-- end_slide -->
+
+Final Notes
+---
+<!-- incremental_lists: true -->
+- What about syncing time?
+  - NTP
+  - Atomic Clocks
+- How do other languages handle this?
+- Did I cover everything around timezones?
+<!-- incremental_lists: false -->
+
+<!-- end_slide -->
+
+
 Resources for this presentation
 ---
 
 # [`Storing UTC is not a silver bullet`](https://codeblog.jonskeet.uk/2019/03/27/storing-utc-is-not-a-silver-bullet/)
 
+# [`Australia/Lord_Howe is the weirdest timezone`](https://ssoready.com/blog/engineering/truths-programmers-timezones/)
+
 # [`When “UTC everywhere” isn’t enough - storing time zones in PostgreSQL and SQL Server`](https://www.roji.org/storing-timezones-in-the-db)
 # [`RFC3339`](https://datatracker.ietf.org/doc/html/rfc3339)
 
 # [`RFC9557`](https://datatracker.ietf.org/doc/html/rfc9557)
+
+# [`RFC8536`](https://datatracker.ietf.org/doc/html/rfc8536)
 
 
