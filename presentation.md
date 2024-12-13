@@ -2,7 +2,7 @@
 title: What time is it? 
 sub_title: Navigating details of DST and other quirks of time
 authors:
-  - Raphael Neumann (mail@raphaelneumann.dk)
+  - Raphael Neumann
 theme:
   name: catppuccin-frappe
   override:
